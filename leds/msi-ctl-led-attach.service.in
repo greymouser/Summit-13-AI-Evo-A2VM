@@ -1,0 +1,12 @@
+[Unit]
+Description=Attach ALSA control to kernel ctl-led (speaker mute LED) on MSI Summit 13 AI+ Evo
+After=sound.target
+Wants=sound.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/default/msi-ctl-led
+ExecStart=@SBINDIR@/msi-ctl-led-attach
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,2 @@
+ACTION=="add|change", SUBSYSTEM=="sound", KERNEL=="ctl-led", TAG+="systemd", \
+  ENV{SYSTEMD_WANTS}+="msi-ctl-led-attach.service"

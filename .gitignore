@@ -1,0 +1,6 @@
+# IIO firmware files
+iio/.*.sha256
+iio/firmware/
+
+# LED systemd service (generated from .service.in)
+leds/msi-ctl-led-attach.service

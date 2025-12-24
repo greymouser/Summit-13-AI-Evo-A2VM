@@ -1,0 +1,33 @@
+#!/bin/sh
+set -eu
+
+# Default values (can be overridden via environment variables)
+want_vendor="${WANT_VENDOR:-Micro-Star International Co., Ltd.}"
+want_product="${WANT_PRODUCT:-Summit 13 AI+ Evo A2VMTG}"
+want_board="${WANT_BOARD:-MS-13P5}"
+card_name="${CARD_NAME:-card0}"
+control_name="${CONTROL_NAME:-Master Playback Switch}"
+
+vendor="$(cat /sys/class/dmi/id/sys_vendor 2>/dev/null || true)"
+product="$(cat /sys/class/dmi/id/product_name 2>/dev/null || true)"
+board="$(cat /sys/class/dmi/id/board_name 2>/dev/null || true)"
+
+# Hard gate: do nothing unless it's exactly your platform
+[ "$vendor" = "$want_vendor" ] || exit 0
+[ "$product" = "$want_product" ] || exit 0
+[ "$board" = "$want_board" ] || exit 0
+
+LED_ATTACH="/sys/class/sound/ctl-led/speaker/${card_name}/attach"
+
+i=0
+while [ $i -lt 60 ]; do
+  if [ -w "$LED_ATTACH" ]; then
+    if printf '%s\n' "$control_name" > "$LED_ATTACH" 2>/dev/null; then
+      exit 0
+    fi
+  fi
+  i=$((i+1))
+  usleep 100000 2>/dev/null || sleep 0.1
+done
+
+exit 1
